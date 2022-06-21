@@ -6,7 +6,6 @@ import {
   isValidElement,
   cloneElement,
 } from "react";
-import { createRoot } from "react-dom/client";
 import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { createCustomEqual } from "fast-equals";
 import { isLatLngLiteral } from "@googlemaps/typescript-guards";
@@ -74,15 +73,16 @@ const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     if (ref.current && !map) {
-      setMap(new google.maps.Map(ref.current, {}));
+      setMap(new google.maps.Map(ref.current, { ...options }));
     }
   }, [ref, map]);
 
-  useDeepCompareEffectForMaps(() => {
-    if (map) {
-      map.setOptions(options);
-    }
-  }, [map, options]);
+  // useDeepCompareEffectForMaps(() => {
+  //   if (map) {
+  //     console.log(options);
+  //     map.setOptions(options);
+  //   }
+  // }, [map, options]);
 
   useEffect(() => {
     if (map) {
@@ -138,39 +138,42 @@ const Marker: React.FC<google.maps.MarkerOptions> = (options) => {
   return null;
 };
 
-const deepCompareEqualsForMaps = createCustomEqual(
-  (deepEqual) => (a: any, b: any) => {
-    if (
-      isLatLngLiteral(a) ||
-      a instanceof google.maps.LatLng ||
-      isLatLngLiteral(b) ||
-      b instanceof google.maps.LatLng
-    ) {
-      return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
-    }
+type deepCompare = {
+  a?: any;
+  b?: any;
+};
 
-    // TODO extend to other types
+// const deepCompareEqualsForMaps = createCustomEqual(
+//   (deepEqual) => (a: any, b: any) => {
+//     console.log(`a: ${a}`);
+//     console.log(`b: ${b}`);
+//     if (
+//       isLatLngLiteral(a) ||
+//       a instanceof google.maps.LatLng ||
+//       isLatLngLiteral(b) ||
+//       b instanceof google.maps.LatLng
+//     ) {
+//       return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
+//     }
+//     return deepEqual(a, b);
+//   }
+// );
 
-    // use fast-equals for other objects
-    return deepEqual(a, b);
-  }
-);
+// function useDeepCompareMemoize(value: any) {
+//   const ref = useRef();
 
-function useDeepCompareMemoize(value: any) {
-  const ref = useRef();
+//   if (!deepCompareEqualsForMaps(value, ref.current)) {
+//     ref.current = value;
+//   }
 
-  if (!deepCompareEqualsForMaps(value, ref.current)) {
-    ref.current = value;
-  }
+//   return ref.current;
+// }
 
-  return ref.current;
-}
-
-function useDeepCompareEffectForMaps(
-  callback: React.EffectCallback,
-  dependencies: any[]
-) {
-  useEffect(callback, dependencies.map(useDeepCompareMemoize));
-}
+// function useDeepCompareEffectForMaps(
+//   callback: React.EffectCallback,
+//   dependencies: any[]
+// ) {
+//   useEffect(callback, dependencies.map(useDeepCompareMemoize));
+// }
 
 export default GoogleMap;
