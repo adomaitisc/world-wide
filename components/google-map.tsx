@@ -36,7 +36,7 @@ const GoogleMap = () => {
 
   return (
     <div className="flex w-1/3 h-1/3">
-      <Wrapper apiKey={""} render={render}>
+      <Wrapper apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY!} render={render}>
         <Map
           center={center}
           onClick={onClick}
