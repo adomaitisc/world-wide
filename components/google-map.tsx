@@ -75,7 +75,7 @@ const Map: React.FC<MapProps> = ({
     if (ref.current && !map) {
       setMap(new google.maps.Map(ref.current, { ...options }));
     }
-  }, [ref, map]);
+  }, [ref, map, options]);
 
   // useDeepCompareEffectForMaps(() => {
   //   if (map) {
