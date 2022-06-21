@@ -15,33 +15,42 @@ const render = (status: Status) => {
 };
 
 const GoogleMap = () => {
+  const [coordinates, setCoordinates] = useState<Array<string> | null>(null);
   const [click, setClick] = useState<google.maps.LatLng>();
-  const [zoom, setZoom] = useState(2); // initial zoom
+  const [zoom, setZoom] = useState(2);
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0,
   });
 
   const onClick = (e: google.maps.MapMouseEvent) => {
-    // avoid directly mutating state
     setClick(e.latLng!);
+    let roundCoords = [e.latLng!.lat().toFixed(3), e.latLng!.lng().toFixed(3)];
+    setCoordinates(roundCoords);
   };
 
   const onIdle = (m: google.maps.Map) => {
-    console.log("onIdle");
     setZoom(m.getZoom()!);
     setCenter(m.getCenter()!.toJSON());
   };
 
   return (
-    <div className="flex w-1/3 h-1/3">
+    <div className="flex flex-col text-center w-full h-full">
+      <p className="text-xs text-gray-400">
+        {coordinates ? `${coordinates[0]}, ${coordinates[1]}` : "-"}
+      </p>
       <Wrapper apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY!} render={render}>
         <Map
           center={center}
           onClick={onClick}
           onIdle={onIdle}
           zoom={zoom}
-          style={{ flexGrow: "1", height: "100%", cursor: "crosshair" }}
+          style={{
+            flexGrow: "1",
+            height: "100%",
+            cursor: "crosshair",
+            borderRadius: "2rem",
+          }}
           fullscreenControl={false} // remove the top-right button
           mapTypeControl={false} // remove the top-left buttons
           streetViewControl={false} // remove the pegman
