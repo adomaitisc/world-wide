@@ -36,10 +36,7 @@ const GoogleMap = () => {
 
   return (
     <div className="flex w-1/3 h-1/3">
-      <Wrapper
-        apiKey={"AIzaSyA4wYSBGNcVOAgjvtWpumF9HZRAC17MXr8"}
-        render={render}
-      >
+      <Wrapper apiKey={""} render={render}>
         <Map
           center={center}
           onClick={onClick}
