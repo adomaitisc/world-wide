@@ -8,6 +8,7 @@ type ButtonProps = {
 type ActionProps = {
   hasGuessed: boolean;
   onPlay: any;
+  onPlayAgain: any;
 };
 
 type GameProps = {
@@ -16,8 +17,8 @@ type GameProps = {
 
 const Game = () => {
   const coordinatesList = [
-    [21, -44],
-    [-40, 12],
+    ["21", "-44"],
+    ["-40", "12"],
   ];
 
   const [isPlaying, setIsPlaying] = useState(false); // if playing: show game, else show play button
@@ -28,6 +29,12 @@ const Game = () => {
     setIsPlaying(true);
   };
 
+  const onPlayAgain = () => {
+    setIsPlaying(false);
+    setHasGuessed(false);
+    setGuess([]);
+  };
+
   const onGuess = (e: any) => {
     console.log(e);
     setIsPlaying(false);
@@ -35,16 +42,37 @@ const Game = () => {
     setHasGuessed(true);
   };
 
-  //Click play button: hide play button -> show game
-
-  //Click guess button: hide game -> show summary
-  //Calculate points
-  //Click quit game: hide game -> show play button
+  /**
+   * if 'not playing', show ActionInterface
+   *  ActionInterface Component:
+   *    displays:
+   *      - play button
+   *      - game summary
+   *    what it does:
+   *      - set state of 'playing' to true
+   *      @dev
+   *      - set state of 'playing' to false
+   *
+   * if 'playing', show GameInterface
+   *  GameInterface Component:
+   *    displays:
+   *      - google streetview
+   *      - google map
+   *      - guess button
+   *    what it does:
+   *      - set state of 'playing' to false
+   *      - set state of 'guessed' to true
+   *      - set state of 'guess' to selected latitude and longitude
+   */
 
   return (
     <>
       {!isPlaying ? (
-        <ActionInterface hasGuessed={hasGuessed} onPlay={onPlay} />
+        <ActionInterface
+          hasGuessed={hasGuessed}
+          onPlay={onPlay}
+          onPlayAgain={onPlayAgain}
+        />
       ) : (
         <GameInterface onGuess={onGuess} />
       )}
@@ -52,7 +80,11 @@ const Game = () => {
   );
 };
 
-const ActionInterface: React.FC<ActionProps> = ({ hasGuessed, onPlay }) => {
+const ActionInterface: React.FC<ActionProps> = ({
+  hasGuessed,
+  onPlay,
+  onPlayAgain,
+}) => {
   return (
     <>
       {!hasGuessed ? (
@@ -61,10 +93,19 @@ const ActionInterface: React.FC<ActionProps> = ({ hasGuessed, onPlay }) => {
             onPlay();
           }}
         >
-          Play button
+          Play
         </button>
       ) : (
-        <h1>Game Summary</h1>
+        <>
+          <h1>Game Summary</h1>
+          <button
+            onClick={() => {
+              onPlayAgain();
+            }}
+          >
+            Play Again
+          </button>
+        </>
       )}
     </>
   );
@@ -77,11 +118,21 @@ const GameInterface: React.FC<GameProps> = ({ onGuess }) => {
     setGuess(e);
   };
 
+  const handleGuess = () => {
+    if (guess.length === 2) {
+      onGuess(guess);
+      setGuess([]);
+    } else {
+      //Does something if guess is empty
+      alert("Please select a location");
+    }
+  };
+
   return (
     <>
       <button
         onClick={() => {
-          onGuess(guess);
+          handleGuess();
         }}
       >
         Guess
