@@ -1,9 +1,7 @@
 import { ReactNode, Ref, useRef, useState } from "react";
+import Button from "./button";
 import GoogleMap from "./google-map";
-
-type ButtonProps = {
-  played: boolean;
-};
+import GoogleStreet from "./google-street";
 
 type ActionProps = {
   hasGuessed: boolean;
@@ -40,6 +38,7 @@ const Game = () => {
     setIsPlaying(false);
     setGuess(e);
     setHasGuessed(true);
+    alert(`You guessed ${e}`);
   };
 
   /**
@@ -88,23 +87,22 @@ const ActionInterface: React.FC<ActionProps> = ({
   return (
     <>
       {!hasGuessed ? (
-        <button
-          onClick={() => {
+        <Button
+          primary
+          action={() => {
             onPlay();
           }}
-        >
-          Play
-        </button>
+          title="Play"
+        />
       ) : (
         <>
           <h1>Game Summary</h1>
-          <button
-            onClick={() => {
+          <Button
+            action={() => {
               onPlayAgain();
             }}
-          >
-            Play Again
-          </button>
+            title="Play Again"
+          />
         </>
       )}
     </>
@@ -130,16 +128,16 @@ const GameInterface: React.FC<GameProps> = ({ onGuess }) => {
 
   return (
     <>
-      <button
-        onClick={() => {
+      <Button
+        primary
+        action={() => {
           handleGuess();
         }}
-      >
-        Guess
-      </button>
+        title="Guess"
+      />
       <div className="mb-4" />
       <div className="w-full h-full relative">
-        <p>Street View</p>
+        {/* <GoogleStreet /> */}
         <div className="absolute right-0 bottom-0 w-2/5 h-2/5">
           <GoogleMap onCoordsChange={onCoordsChange} />
         </div>
