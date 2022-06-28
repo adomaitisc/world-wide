@@ -11,17 +11,29 @@ type ActionProps = {
 
 type GameProps = {
   onGuess: any;
+  location: {
+    lat: number;
+    lng: number;
+  };
 };
 
 const Game = () => {
-  const coordinatesList = [
-    ["21", "-44"],
-    ["-40", "12"],
+  const coordinateList = [
+    {
+      lat: -23.5507,
+      lng: -47.12362,
+    },
+    {
+      lat: -23.52585,
+      lng: -47.13177,
+    },
   ];
 
-  const [isPlaying, setIsPlaying] = useState(false); // if playing: show game, else show play button
-  const [hasGuessed, setHasGuessed] = useState(false); // if guessed, show summary
-  const [guess, setGuess] = useState([]); // guess = [latitude, logitude]
+  const location = coordinateList[0];
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasGuessed, setHasGuessed] = useState(false);
+  const [guess, setGuess] = useState([]);
 
   const onPlay = () => {
     setIsPlaying(true);
@@ -38,7 +50,9 @@ const Game = () => {
     setIsPlaying(false);
     setGuess(e);
     setHasGuessed(true);
-    alert(`You guessed ${e}`);
+    alert(
+      `You guessed: ${e}, Correct answer is: ${location.lat}, ${location.lng}`
+    );
   };
 
   /**
@@ -73,7 +87,7 @@ const Game = () => {
           onPlayAgain={onPlayAgain}
         />
       ) : (
-        <GameInterface onGuess={onGuess} />
+        <GameInterface onGuess={onGuess} location={location} />
       )}
     </>
   );
@@ -109,7 +123,7 @@ const ActionInterface: React.FC<ActionProps> = ({
   );
 };
 
-const GameInterface: React.FC<GameProps> = ({ onGuess }) => {
+const GameInterface: React.FC<GameProps> = ({ onGuess, location }) => {
   const [guess, setGuess] = useState([]);
 
   const onCoordsChange = (e: any) => {
@@ -137,8 +151,8 @@ const GameInterface: React.FC<GameProps> = ({ onGuess }) => {
       />
       <div className="mb-4" />
       <div className="w-full h-full relative">
-        {/* <GoogleStreet /> */}
-        <div className="absolute right-0 bottom-0 w-2/5 h-2/5">
+        <GoogleStreet location={location} />
+        <div className="absolute right-0 bottom-0 w-1/5 h-1/5 z-10 opacity-60 hover:w-2/5 hover:h-2/5 hover:opacity-100 transition-all duration-300 rounded-xl">
           <GoogleMap onCoordsChange={onCoordsChange} />
         </div>
       </div>

@@ -39,7 +39,7 @@ const GoogleMap: React.FC<GameProps> = ({ onCoordsChange }) => {
   };
 
   return (
-    <div className="flex flex-col text-center w-full h-full">
+    <div className="flex flex-col text-center w-full h-full border-4 border-green-400">
       <Wrapper apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY!}>
         <Map
           center={center}
@@ -70,14 +70,14 @@ const Map: React.FC<MapProps> = ({
   style,
   ...options
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map>();
 
   useEffect(() => {
-    if (ref.current && !map) {
-      setMap(new google.maps.Map(ref.current, { ...options }));
+    if (mapRef.current && !map) {
+      setMap(new google.maps.Map(mapRef.current, { ...options }));
     }
-  }, [ref, map, options]);
+  }, [mapRef, map, options]);
 
   useEffect(() => {
     if (map) {
@@ -97,7 +97,7 @@ const Map: React.FC<MapProps> = ({
 
   return (
     <>
-      <div ref={ref} style={style} />
+      <div ref={mapRef} style={style} />
       {Children.map(children, (child) => {
         if (isValidElement(child)) {
           return cloneElement(child, { map });
